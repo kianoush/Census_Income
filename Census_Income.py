@@ -54,9 +54,34 @@ raw_data['occupation'].fillna('no_fill', inplace=True)
 raw_data['workclass'].replace(('no_fill', 'Federal-gov', 'Local-gov', 'Never-worked', 'Private', 'Self-emp-inc',
                             'Self-emp-not-inc', 'State-gov', 'Without-pay'), (0, 1, 2, 3, 4, 5, 6, 7, 8),
                             inplace =True)
+print(raw_data['education'].value_counts().sort_index())
 raw_data['education'].replace(('10th', '11th', '12th', '1st-4th', '5th-6th', '7th-8th',
-                            '9th', 'Assoc-acdm', 'Assoc-voc', 'Bachelors', 'Doctorate', 'HS-grad', 'Masters', 'Preschool',
-                            'Prof-school', 'Some-college'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+                            '9th'), ('school'),
                             inplace =True)
+raw_data['education'].replace(('school', 'Assoc-acdm', 'Assoc-voc', 'Bachelors', 'Doctorate', 'HS-grad', 'Masters', 'Preschool',
+                            'Prof-school', 'Some-college'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                            inplace =True)
+raw_data['marital_status'].replace(('Divorced', 'Married-AF-spouse', 'Married-civ-spouse',
+                            'Married-spouse-absent', 'Never-married', 'Separated', 'Widowed'), (0, 1, 2, 3, 4, 5, 6),
+                            inplace =True)
+raw_data['occupation'].replace(('?', 'Adm-clerical', 'Armed-Forces', 'Craft-repair', 'Exec-managerial',
+                            'Farming-fishing', 'Handlers-cleaners', 'Machine-op-inspct', 'Other-service',
+                            'Priv-house-serv', 'Prof-specialty', 'Protective-serv', 'Sales',
+                            'Tech-support', 'Transport-moving'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
+                            inplace =True)
+raw_data['occupation'].replace(('?', 'Adm-clerical', 'Armed-Forces', 'Craft-repair', 'Exec-managerial',
+                            'Farming-fishing', 'Handlers-cleaners', 'Machine-op-inspct', 'Other-service',
+                            'Priv-house-serv', 'Prof-specialty', 'Protective-serv', 'Sales',
+                            'Tech-support', 'Transport-moving'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
+                            inplace =True)
+
+raw_data['sex'] = np.where(raw_data.sex=='Male', 0, 1)
+raw_data['income_level'] = np.where(raw_data.income_level=='<=50K', 0, 1)
+
+d = (raw_data.hours_per_week.value_counts())
+
+
+# raw_data.drop(column=['fnlwgt', 'education_num',
+#        'race', 'capital_gain', 'capital_loss', 'native_country'])
 
 print('End!!!')
