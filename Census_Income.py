@@ -81,7 +81,7 @@ raw_data['income_level'] = np.where(raw_data.income_level=='<=50K', 0, 1)
 d = (raw_data.hours_per_week.value_counts())
 
 
-# raw_data.drop(column=['fnlwgt', 'education_num',
-#        'race', 'capital_gain', 'capital_loss', 'native_country'])
+raw_data.drop(columns=['fnlwgt', 'education_num',
+       'race', 'capital_gain', 'capital_loss', 'native_country', 'relationship'], inplace=True)
 
 print('End!!!')
