@@ -17,7 +17,6 @@ Missing Values: Yes
 
 import pandas as pd
 import torch
-import torch.nn as nn
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -60,12 +59,7 @@ raw_data['education'].replace(('school', 'Assoc-acdm', 'Assoc-voc', 'Bachelors',
 raw_data['marital_status'].replace(('Divorced', 'Married-AF-spouse', 'Married-civ-spouse',
                             'Married-spouse-absent', 'Never-married', 'Separated', 'Widowed'), (0, 1, 2, 3, 4, 5, 6),
                             inplace =True)
-raw_data['occupation'].replace(('?', 'Adm-clerical', 'Armed-Forces', 'Craft-repair', 'Exec-managerial',
-                            'Farming-fishing', 'Handlers-cleaners', 'Machine-op-inspct', 'Other-service',
-                            'Priv-house-serv', 'Prof-specialty', 'Protective-serv', 'Sales',
-                            'Tech-support', 'Transport-moving'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
-                            inplace =True)
-raw_data['occupation'].replace(('?', 'Adm-clerical', 'Armed-Forces', 'Craft-repair', 'Exec-managerial',
+raw_data['occupation'].replace(('no_fill', 'Adm-clerical', 'Armed-Forces', 'Craft-repair', 'Exec-managerial',
                             'Farming-fishing', 'Handlers-cleaners', 'Machine-op-inspct', 'Other-service',
                             'Priv-house-serv', 'Prof-specialty', 'Protective-serv', 'Sales',
                             'Tech-support', 'Transport-moving'), (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
@@ -78,17 +72,22 @@ raw_data['hours_per_week'] = np.where(raw_data.hours_per_week < 40, 0, 1)
 raw_data.drop(columns=['fnlwgt', 'education_num',
        'race', 'capital_gain', 'capital_loss', 'native_country', 'relationship'], inplace=True)
 
-data = raw_data.iloc[:, :7]
-labels = raw_data.iloc[:, 7]
+# raw_data.info()
+# print(np.unique(raw_data['occupation']))
+
+
+data = raw_data.iloc[:, :7].values
+labels = raw_data.iloc[:, 7].values
+
 
 
 """
 Split train and test
 """
-X_train, X_test, Y_train, Y_test = train_test_split(data, labels, shuffle=True, test_size=0.2)
-X_train01, X_valid, Y_train, Y_valid = train_test_split(X_train, Y_train, shuffle=True, test_size=0.2)
+X_train, X_test, Y_train, Y_test = train_test_split(data, labels, test_size=0.2, shuffle=True)
+X_train, X_valid, Y_train, Y_valid = train_test_split(X_train, Y_train, test_size=0.2, shuffle=True)
 
-X_train = torch.tensor(X_train01).float()
+X_train = torch.tensor(X_train).float()
 X_test = torch.tensor(X_test).float()
 X_valid = torch.tensor(X_valid).float()
 
@@ -99,10 +98,10 @@ Y_valid = torch.tensor(Y_valid).long()
 """
 Model
 """
-num_samples = X_train.shape[0]
+num_features = X_train.shape[1]
 num_classes = 2
 num_hiddenl = 10
-model = torch.nn.Sequential(torch.nn.Linear(num_samples, num_hiddenl),
+model = torch.nn.Sequential(torch.nn.Linear(num_features, num_hiddenl),
                             torch.nn.ReLU(),
                             torch.nn.Linear(num_hiddenl, num_classes))
 
